@@ -1,0 +1,75 @@
+#contact-form {
+    width: 55%;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+  
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+  
+.contact-info {
+    position: relative;
+}
+  
+.text-field {
+    width: 100%;
+    padding: 10px 35px 10px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+ }
+  
+.text-field:focus {
+    outline: none;
+    border-color: #555;
+}
+  
+.clear {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    cursor: pointer;
+}
+  
+.clear:hover {
+    color: #222;
+}
+  
+.btns {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+  
+.btns button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+}
+  
+#save {
+    background: #333;
+    color: white;
+}
+  
+#save:hover {
+    background: #555;
+}
+  
+#delete {
+    background: #d33;
+    color: white;
+}
+  
+#delete:hover {
+    background: #a00;
+}
