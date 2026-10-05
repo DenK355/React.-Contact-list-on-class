@@ -1,152 +1,154 @@
-import { Component } from 'react'
+import { useState } from 'react'
 import './ContactForm.css'
 
-export class ContactForm extends Component {
+function ContactForm({ contactEdit, onSubmit, onDelete }) {
 
-    state = {
-        ...this.props.contactEdit,
-    }
+  const createEmptyContact = () => ({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+  })
 
-    createEmptyContact() {
-        return {
-            firstName: '',
-            lastName: '',
-            email: '',
-            phone: '',
-        }
-    }
+  const [form, setForm] = useState({
+    ...contactEdit,
+  })
 
-    onInputChange = (e) => {
-        this.setState({
-            [e.target.name] : e.target.value,
-        })
-    }
-
-    onClearField = (e) => {
-        const sibling = e.target.parentNode.firstChild;
-        this.setState({
-            [sibling.name]: '', 
-        })
-    }
-
-    onFormSubmit = (e) => {
-        e.preventDefault();
-        this.props.onSubmit({
-            ...this.state,
-        });
-
-        if(!this.state.id) {
-            this.setState({
-                ...this.createEmptyContact(),
-            })
-        }
-
-    }
-
-    onContactDelete = () => {
-        this.props.onDelete(this.props.contactEdit.id)
-        this.setState({
-            ...this.createEmptyContact(),
-        })
-    }
-
-  render() {
-    return (
-      <form id='contact-form' onSubmit={this.onFormSubmit}>
-            <div className='form-container'>
-                <div className='contact-info'>
-
-                    <input 
-                        type="text" 
-                        className='text-field'
-                        placeholder='First Name'
-                        name='firstName'
-                        value={this.state.firstName}
-                        onChange = {this.onInputChange}
-                    />
-
-                    <span className='clear' onClick={this.onClearField}>
-                        X
-                    </span>
-
-                </div>
-
-                <div className='contact-info'>
-
-                    <input 
-                        type="text" 
-                        className='text-field'
-                        placeholder='Last Name'
-                        name='lastName'
-                        value={this.state.lastName}
-                        onChange = {this.onInputChange}
-                    />
-
-                    <span className='clear' onClick={this.onClearField}>
-                        X
-                    </span>
-
-                </div>
-
-                <div className='contact-info'>
-
-                    <input 
-                        type="text" 
-                        className='text-field'
-                        placeholder='email'
-                        name='email'
-                        value={this.state.email}
-                        onChange = {this.onInputChange}
-                    />
-
-                    <span className='clear' onClick={this.onClearField}>
-                        X
-                    </span>
-
-                </div>
-
-                <div className='contact-info'>
-
-                    <input 
-                        type="text" 
-                        className='text-field'
-                        placeholder='Phone'
-                        name='phone'
-                        value={this.state.phone}
-                        onChange = {this.onInputChange}
-                    />
-
-                    <span className='clear' onClick={this.onClearField}>
-                        X
-                    </span>
-
-                </div>
-
-            </div>
-
-            <div className='btns'>
-
-                <button id='save' type='submit'>
-                    Save
-                </button>
-                {
-                    this.state.id ? (
-                        <button 
-                            id='delete'
-                            type='button'
-                            onClick={this.onContactDelete}
-                        >
-                            Delete
-                        </button>
-                    ) : (
-                        ''
-                    )}
-
-            </div>
-
-      </form>
-    )
+  const onInputChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    })
   }
+
+  const onClearField = (e) => {
+    const sibling = e.target.parentNode.firstChild
+
+    setForm({
+      ...form,
+      [sibling.name]: '',
+    })
+  }
+
+  const onFormSubmit = (e) => {
+    e.preventDefault()
+
+    onSubmit({
+      ...form,
+    })
+
+    if (!form.id) {
+      setForm(createEmptyContact())
+    }
+  }
+
+  const onContactDelete = () => {
+    onDelete(form.id)
+    setForm(createEmptyContact())
+  }
+
+  return (
+    <form id="contact-form" onSubmit={onFormSubmit}>
+
+      <div className="form-container">
+
+        <div className="contact-info">
+          <input
+            type="text"
+            className="text-field"
+            placeholder="First Name"
+            name="firstName"
+            value={form.firstName}
+            onChange={onInputChange}
+          />
+
+          <span
+            className="clear"
+            onClick={onClearField}
+          >
+            X
+          </span>
+        </div>
+
+        <div className="contact-info">
+          <input
+            type="text"
+            className="text-field"
+            placeholder="Last Name"
+            name="lastName"
+            value={form.lastName}
+            onChange={onInputChange}
+          />
+
+          <span
+            className="clear"
+            onClick={onClearField}
+          >
+            X
+          </span>
+        </div>
+
+        <div className="contact-info">
+          <input
+            type="text"
+            className="text-field"
+            placeholder="email"
+            name="email"
+            value={form.email}
+            onChange={onInputChange}
+          />
+
+          <span
+            className="clear"
+            onClick={onClearField}
+          >
+            X
+          </span>
+        </div>
+
+        <div className="contact-info">
+          <input
+            type="text"
+            className="text-field"
+            placeholder="Phone"
+            name="phone"
+            value={form.phone}
+            onChange={onInputChange}
+          />
+
+          <span
+            className="clear"
+            onClick={onClearField}
+          >
+            X
+          </span>
+        </div>
+
+      </div>
+
+      <div className="btns">
+
+        <button
+          id="save"
+          type="submit"
+        >
+          Save
+        </button>
+
+        {form.id && (
+          <button
+            id="delete"
+            type="button"
+            onClick={onContactDelete}
+          >
+            Delete
+          </button>
+        )}
+
+      </div>
+
+    </form>
+  )
 }
 
 export default ContactForm
