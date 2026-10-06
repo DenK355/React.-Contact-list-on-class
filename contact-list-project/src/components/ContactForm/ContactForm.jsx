@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './ContactForm.css'
 
 function ContactForm({ contactEdit, onSubmit, onDelete }) {
@@ -10,9 +10,12 @@ function ContactForm({ contactEdit, onSubmit, onDelete }) {
     phone: '',
   })
 
-  const [form, setForm] = useState({
-    ...contactEdit,
-  })
+  const [form, setForm] = useState(contactEdit)
+
+  // Обновляем форму, когда выбираем другой контакт
+  useEffect(() => {
+    setForm(contactEdit)
+  }, [contactEdit])
 
   const onInputChange = (e) => {
     setForm({
@@ -37,6 +40,7 @@ function ContactForm({ contactEdit, onSubmit, onDelete }) {
       ...form,
     })
 
+    // После создания нового контакта очищаем форму
     if (!form.id) {
       setForm(createEmptyContact())
     }

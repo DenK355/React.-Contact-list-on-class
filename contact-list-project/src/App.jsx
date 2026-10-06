@@ -5,6 +5,13 @@ import './App.css'
 import ContactForm from './components/ContactForm/ContactForm'
 import ContactList from './components/ContactList/ContactList'
 
+import {
+  getContacts,
+  createContact,
+  updateContact,
+  deleteContact,
+} from './api/contact-service'
+
 function App() {
   const createEmptyContact = () => ({
     firstName: '',
@@ -16,34 +23,67 @@ function App() {
   const [contacts, setContacts] = useState([])
   const [contactEdit, setContactEdit] = useState(createEmptyContact())
 
-  // Загружаем контакты при запуске приложения
+  
   useEffect(() => {
-    const savedContacts = JSON.parse(localStorage.getItem('contacts'))
-
-    if (savedContacts) {
-      setContacts(savedContacts)
-    }
+    getContacts()
+      .then((response) => {
+        setContacts(response.data)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }, [])
 
-  // Сохраняем контакты после каждого изменения
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts))
-  }, [contacts])
-
-  const deleteContact = (id) => {
-    setContacts((prevContacts) =>
-      prevContacts.filter((contact) => contact.id !== id)
-    )
-
-    setContactEdit(createEmptyContact())
-  }
-
+  
   const saveContact = (contact) => {
     if (!contact.id) {
-      createContact(contact)
+      const newContact = {
+        ...contact,
+        id: nanoid(),
+      }
+
+      createContact(newContact)
+        .then((response) => {
+          setContacts((prevContacts) => [
+            ...prevContacts,
+            response.data,
+          ])
+
+          setContactEdit(createEmptyContact())
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     } else {
+      
       updateContact(contact)
+        .then((response) => {
+          setContacts((prevContacts) =>
+            prevContacts.map((item) =>
+              item.id === contact.id ? response.data : item
+            )
+          )
+
+          setContactEdit(response.data)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
+  }
+  
+  const removeContact = (id) => {
+    deleteContact(id)
+      .then(() => {
+        setContacts((prevContacts) =>
+          prevContacts.filter((contact) => contact.id !== id)
+        )
+
+        setContactEdit(createEmptyContact())
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   const addNewContact = () => {
@@ -54,38 +94,15 @@ function App() {
     setContactEdit(contact)
   }
 
-  const createContact = (contact) => {
-    const newContact = {
-      ...contact,
-      id: nanoid(),
-    }
-
-    setContacts((prevContacts) => [
-      ...prevContacts,
-      newContact,
-    ])
-
-    setContactEdit(createEmptyContact())
-  }
-
-  const updateContact = (contact) => {
-    setContacts((prevContacts) =>
-      prevContacts.map((item) =>
-        item.id === contact.id ? contact : item
-      )
-    )
-
-    setContactEdit(contact)
-  }
-
   return (
     <div className="container">
       <h1 className="header">Contact List</h1>
 
       <div className="main">
+
         <ContactList
           contacts={contacts}
-          onDelete={deleteContact}
+          onDelete={removeContact}
           onAddContact={addNewContact}
           onEditContact={selectContact}
         />
@@ -94,8 +111,9 @@ function App() {
           key={contactEdit.id}
           contactEdit={contactEdit}
           onSubmit={saveContact}
-          onDelete={deleteContact}
+          onDelete={removeContact}
         />
+
       </div>
     </div>
   )

@@ -14,6 +14,7 @@ function ContactItem({ contact, onDelete, onEdit }) {
 
   return (
     <div className="contact-item">
+
       <p
         className="content"
         onDoubleClick={onContactEdit}
@@ -27,6 +28,7 @@ function ContactItem({ contact, onDelete, onEdit }) {
       >
         X
       </span>
+
     </div>
   )
 }

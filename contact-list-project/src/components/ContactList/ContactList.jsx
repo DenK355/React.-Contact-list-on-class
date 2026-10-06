@@ -9,6 +9,7 @@ function ContactList({
 }) {
   return (
     <div className="contact-list">
+
       <div className="contacts">
         {contacts.map((contact) => (
           <ContactItem
@@ -27,6 +28,7 @@ function ContactList({
       >
         New
       </button>
+
     </div>
   )
 }
