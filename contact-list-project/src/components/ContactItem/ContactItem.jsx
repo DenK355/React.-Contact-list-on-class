@@ -1,6 +1,10 @@
 import './ContactItem.css'
 
-function ContactItem({ contact, onDelete, onEdit }) {
+function ContactItem({
+  contact,
+  onDelete,
+  onEdit,
+}) {
 
   const onItemDelete = (e) => {
     e.stopPropagation()

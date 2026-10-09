@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
 import './ContactForm.css'
 
-function ContactForm({ contactEdit, onSubmit, onDelete }) {
+function ContactForm({
+  contactEdit,
+  onSubmit,
+  onDelete,
+}) {
 
   const createEmptyContact = () => ({
     firstName: '',
@@ -12,7 +16,6 @@ function ContactForm({ contactEdit, onSubmit, onDelete }) {
 
   const [form, setForm] = useState(contactEdit)
 
-  // Обновляем форму, когда выбираем другой контакт
   useEffect(() => {
     setForm(contactEdit)
   }, [contactEdit])
@@ -40,7 +43,6 @@ function ContactForm({ contactEdit, onSubmit, onDelete }) {
       ...form,
     })
 
-    // После создания нового контакта очищаем форму
     if (!form.id) {
       setForm(createEmptyContact())
     }
@@ -52,7 +54,10 @@ function ContactForm({ contactEdit, onSubmit, onDelete }) {
   }
 
   return (
-    <form id="contact-form" onSubmit={onFormSubmit}>
+    <form
+      id="contact-form"
+      onSubmit={onFormSubmit}
+    >
 
       <div className="form-container">
 

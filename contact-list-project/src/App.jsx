@@ -1,120 +1,92 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { nanoid } from 'nanoid'
+
 import './App.css'
 
 import ContactForm from './components/ContactForm/ContactForm'
 import ContactList from './components/ContactList/ContactList'
 
 import {
-  getContacts,
-  createContact,
-  updateContact,
-  deleteContact,
-} from './api/contact-service'
+  fetchContacts,
+  addContact,
+  editContact,
+  removeContact,
+  selectContact,
+  clearContact,
+} from './redux/contactsSlice'
 
 function App() {
-  const createEmptyContact = () => ({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-  })
 
-  const [contacts, setContacts] = useState([])
-  const [contactEdit, setContactEdit] = useState(createEmptyContact())
+  const dispatch = useDispatch()
 
-  
+  const contacts = useSelector(
+    (state) => state.contacts.contacts
+  )
+
+  const contactEdit = useSelector(
+    (state) => state.contacts.contactEdit
+  )
+
   useEffect(() => {
-    getContacts()
-      .then((response) => {
-        setContacts(response.data)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  }, [])
+    dispatch(fetchContacts())
+  }, [dispatch])
 
-  
   const saveContact = (contact) => {
+
     if (!contact.id) {
+
       const newContact = {
         ...contact,
         id: nanoid(),
       }
 
-      createContact(newContact)
-        .then((response) => {
-          setContacts((prevContacts) => [
-            ...prevContacts,
-            response.data,
-          ])
+      dispatch(addContact(newContact))
 
-          setContactEdit(createEmptyContact())
-        })
-        .catch((error) => {
-          console.log(error)
-        })
     } else {
-      
-      updateContact(contact)
-        .then((response) => {
-          setContacts((prevContacts) =>
-            prevContacts.map((item) =>
-              item.id === contact.id ? response.data : item
-            )
-          )
 
-          setContactEdit(response.data)
-        })
-        .catch((error) => {
-          console.log(error)
-        })
+      dispatch(editContact(contact))
+
     }
   }
-  
-  const removeContact = (id) => {
-    deleteContact(id)
-      .then(() => {
-        setContacts((prevContacts) =>
-          prevContacts.filter((contact) => contact.id !== id)
-        )
 
-        setContactEdit(createEmptyContact())
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+  const deleteContact = (id) => {
+    dispatch(removeContact(id))
   }
 
   const addNewContact = () => {
-    setContactEdit(createEmptyContact())
+    dispatch(clearContact())
   }
 
-  const selectContact = (contact) => {
-    setContactEdit(contact)
+  const selectContactHandler = (contact) => {
+    dispatch(selectContact(contact))
   }
 
   return (
     <div className="container">
-      <h1 className="header">Contact List</h1>
+
+      <h1 className="header">
+        Contact List
+      </h1>
 
       <div className="main">
 
         <ContactList
           contacts={contacts}
-          onDelete={removeContact}
+          onDelete={deleteContact}
           onAddContact={addNewContact}
-          onEditContact={selectContact}
+          onEditContact={selectContactHandler}
         />
 
         <ContactForm
           key={contactEdit.id}
           contactEdit={contactEdit}
           onSubmit={saveContact}
-          onDelete={removeContact}
+          onDelete={deleteContact}
         />
 
       </div>
+
     </div>
   )
 }

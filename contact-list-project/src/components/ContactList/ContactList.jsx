@@ -11,6 +11,7 @@ function ContactList({
     <div className="contact-list">
 
       <div className="contacts">
+
         {contacts.map((contact) => (
           <ContactItem
             key={contact.id}
@@ -19,6 +20,7 @@ function ContactList({
             onEdit={onEditContact}
           />
         ))}
+
       </div>
 
       <button
